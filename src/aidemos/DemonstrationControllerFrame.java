@@ -7,6 +7,7 @@ package aidemos;
 
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
@@ -18,6 +19,7 @@ public final class DemonstrationControllerFrame extends javax.swing.JFrame {
 //<editor-fold defaultstate="collapsed" desc="Constructors">
     {
         executors = new ArrayList<>();
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     /**
@@ -41,46 +43,48 @@ public final class DemonstrationControllerFrame extends javax.swing.JFrame {
     }
 //</editor-fold>
 
+//<editor-fold defaultstate="collapsed" desc="Methods">
     private void initDefaultExecutors() {
         ArrayList<DemonstrationExecutor> defaults = new ArrayList<>();
         
         //lambda duck-typing... <sigh>
         defaults.add(new DemonstrationExecutor("AND Truth Table", () -> {
             System.out.println("Running AND!!!");
+            NeuralNetTruthTableFrame nntt = new NeuralNetTruthTableFrame("AND");
+            nntt.setVisible(true);
         }));
-
+        
         //olde school :-)
         defaults.add(new DemonstrationExecutor("OR Truth Table", new ExecutorIntf() {
             @Override
             public void run() {
                 System.out.println("Running OR!!!");
+                NeuralNetTruthTableFrame nntt = new NeuralNetTruthTableFrame("OR");
+                nntt.setVisible(true);
             }
         }));
-
+        
         defaults.add(new DemonstrationExecutor("XOR Truth Table", new ExecutorIntf() {
             @Override
             public void run() {
                 System.out.println("Running XOR!!!");
+                NeuralNetTruthTableFrame nntt = new NeuralNetTruthTableFrame("XOR");
+                nntt.setVisible(true);
             }
         }));
-
+        
         defaults.add(new DemonstrationExecutor("Number Sort", new ExecutorIntf() {
             @Override
             public void run() {
                 System.out.println("Number Sort...");
+                NeuralNetNumberSortFrame ns = new NeuralNetNumberSortFrame();
+                ns.setVisible(true);
             }
         }));
-
+        
         setDemonstationExecutors(defaults);
     }
-
-    private ArrayList<DemonstrationExecutor> executors;
-
-    public void setDemonstationExecutors(ArrayList<DemonstrationExecutor> executors) {
-        this.executors = executors;
-        updateGUI();
-    }
-
+    
     private void updateGUI() {
         cbxAIDemonstration.removeAllItems();
         executors.forEach((executor) -> {cbxAIDemonstration.addItem(executor.getName());});
@@ -93,10 +97,20 @@ public final class DemonstrationControllerFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Please select an item in the Demonstration list, and try again.");
         }
     }
-    
+        
     public void exit(){
         this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }
+//</editor-fold>
+    
+//<editor-fold defaultstate="collapsed" desc="Properties">
+    private ArrayList<DemonstrationExecutor> executors;
+    
+    public void setDemonstationExecutors(ArrayList<DemonstrationExecutor> executors) {
+        this.executors = executors;
+        updateGUI();
+    }
+//</editor-fold>
 
     /**
      * This method is called from within the constructor to initialize the form.
