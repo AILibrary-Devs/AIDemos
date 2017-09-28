@@ -17,9 +17,21 @@ public class AIDemos {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+//        showNetVisualizer();
+        showDemonsrationController();
+    }
+
+    private static void showNetVisualizer() {
         NetVisualizerFrame nv = new NetVisualizerFrame();
         nv.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         nv.setVisible(true);
     }
+
+    private static void showDemonsrationController() {
+        DemonstrationControllerFrame dc = new DemonstrationControllerFrame();
+        dc.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        dc.setVisible(true);
+    }
+
     
 }
