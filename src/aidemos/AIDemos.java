@@ -5,7 +5,9 @@
  */
 package aidemos;
 
-import javax.swing.JFrame;
+import common.ImageToolbox;
+import images.ImageViewerFrame;
+import java.awt.Image;
 
 /**
  *
@@ -18,7 +20,8 @@ public class AIDemos {
      */
     public static void main(String[] args) {
 //        showNetVisualizer();
-        showDemonsrationController();
+//        showDemonsrationController();
+        showImageViewer();
     }
 
     private static void showNetVisualizer() {
@@ -26,12 +29,19 @@ public class AIDemos {
         nv.setVisible(true);
     }
 
+    private static void showImageViewer() {
+        Image image = ImageToolbox.loadImageFromResource("images/mnist_test0.jpg");
+        Image[][] images = ImageToolbox.getSubimageArrays(image, 31, 32);
+        
+        ImageViewerFrame iv = new ImageViewerFrame(images);
+        iv.setVisible(true);
+    }
+    
     private static void showDemonsrationController() {
         DemonstrationControllerFrame dc = new DemonstrationControllerFrame();
         dc.setVisible(true);
-        
+
 //        DemonstrationControllerFrame.main(new String[0]);
     }
 
-    
 }

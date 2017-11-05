@@ -7,7 +7,7 @@ package aidemos;
 
 import java.util.ArrayList;
 import javax.swing.JPanel;
-import neural_net.NeuralNet;
+import neural_net.NeuralNetOlde;
 import neural_net.NeuralNetIntf;
 
 /**
@@ -23,110 +23,110 @@ public class NetVisualizerFrame extends javax.swing.JFrame {
         initComponents();
         initData();
     }
-    
-    private void initData(){
+
+    private void initData() {
         // initialize net
-        net = NeuralNet.neuralNetFactory(getPerceptionLayerCount(), getHiddenLayerCount(), getOutputLayerCount());
+        net = NeuralNetOlde.neuralNetFactory(getPerceptionLayerCount(), getHiddenLayerCount(), getOutputLayerCount());
         updateExpectedDataIndex();
         updateGUIDataElements();
-        
+
         //new test stuff
         ArrayList<JPanel> dataPanels = new ArrayList<>();
         dataPanels.add(new ModelValueSetPanel(new ModelValueSet<>("Input 1", "False", "True", "False", "True")));
         dataPanels.add(new ModelValueSetPanel(new ModelValueSet<>("Input 2", "False", "False", "True", "True")));
         dataPanels.add(new ModelValueSetPanel(new ModelValueSet<>("- AND -", "False", "False", "False", "True")));
         dataPanels.add(new ModelValueSetPanel(new ModelValueSet<>("Trained", 0.10021, 0.14932, 0.10125, 0.89533)));
-        
+
         JPanel modelDataPanel = new ModelDataPanel("3) Model Data - AND", dataPanels);
         pnlModel.add(modelDataPanel);
         pnlModel.setVisible(true);
-        
+
     }
-    
+
 //<editor-fold defaultstate="collapsed" desc="Data Properties">
     NeuralNetIntf net;
-    
+
     private static final double LOW = 0.1;
     private static final double MID = 0.5;
     private static final double HIGH = 0.9;
-    
+
     private static final String FALSE = "F";
     private static final String TRUE = "T";
 
-    private static final double[][] TRUTH_TABLE_INPUT = 
-    {
-        { LOW, LOW },
-        { LOW, HIGH },
-        { HIGH, LOW },
-        { HIGH, HIGH }
-    };
-    
-    public double[][] getInputs(){
+    private static final double[][] TRUTH_TABLE_INPUT
+            = {
+                {LOW, LOW},
+                {LOW, HIGH},
+                {HIGH, LOW},
+                {HIGH, HIGH}
+            };
+
+    public double[][] getInputs() {
         return TRUTH_TABLE_INPUT;
     }
 
-    public double[][] getExpectedOutputs(){
+    public double[][] getExpectedOutputs() {
         switch (getExpectedDataIndex()) {
-            case AND_IDX :
+            case AND_IDX:
                 return AND_EXPECTED_OUTPUT;
-            case OR_IDX :
+            case OR_IDX:
                 return OR_EXPECTED_OUTPUT;
-            case XOR_IDX :
+            case XOR_IDX:
             default:
                 return XOR_EXPECTED_OUTPUT;
         }
     }
 
-    private static final double[][] XOR_EXPECTED_OUTPUT = 
-    {
-        { LOW },
-        { HIGH },
-        { HIGH },
-        { LOW }
-    };
+    private static final double[][] XOR_EXPECTED_OUTPUT
+            = {
+                {LOW},
+                {HIGH},
+                {HIGH},
+                {LOW}
+            };
 
-    private static final double[][] AND_EXPECTED_OUTPUT = 
-    {
-        { LOW },
-        { LOW },
-        { LOW },
-        { HIGH }
-    };
+    private static final double[][] AND_EXPECTED_OUTPUT
+            = {
+                {LOW},
+                {LOW},
+                {LOW},
+                {HIGH}
+            };
 
-    private final double[][] OR_EXPECTED_OUTPUT = 
-    {
-        { LOW },
-        { HIGH },
-        { HIGH },
-        { HIGH }
-    };
+    private final double[][] OR_EXPECTED_OUTPUT
+            = {
+                {LOW},
+                {HIGH},
+                {HIGH},
+                {HIGH}
+            };
 
     private int expectedDataIndex;
-    
-    public int getExpectedDataIndex(){
+
+    public int getExpectedDataIndex() {
         return expectedDataIndex;
     }
-    
-    public void setExpectedDataIndex(int expectedDataIndex){
-        if (this.expectedDataIndex != expectedDataIndex){
+
+    public void setExpectedDataIndex(int expectedDataIndex) {
+        if (this.expectedDataIndex != expectedDataIndex) {
             this.expectedDataIndex = expectedDataIndex;
             updateGUIDataElements();
         }
     }
-        
-    private void updateExpectedDataIndex(){
+
+    private void updateExpectedDataIndex() {
         setExpectedDataIndex(jcbxInputDataSet.getSelectedIndex());
     }
-    
+
     private static final int AND_IDX = 0;
-    private static final int OR_IDX  = 1;
+    private static final int OR_IDX = 1;
     private static final int XOR_IDX = 2;
 
     private static final int OUTPUT_IDX_FF = 0;
     private static final int OUTPUT_IDX_TF = 1;
     private static final int OUTPUT_IDX_FT = 2;
     private static final int OUTPUT_IDX_TT = 3;
-    
+
 //    private static final double[][] EXPECTED_OUTPUT = 
 //    {   // FF,  TF,   FT,   TT
 //        { LOW,  LOW,  LOW,  HIGH }, // AND
@@ -137,8 +137,7 @@ public class NetVisualizerFrame extends javax.swing.JFrame {
 //    public double[] getExpectedOutput(){
 //        return EXPECTED_OUTPUT[getExpectedDataIndex()];
 //    }
-    
-    private void updateGUIDataElements(){
+    private void updateGUIDataElements() {
         jlblInput00.setText(translateValueToBooleanLabel(TRUTH_TABLE_INPUT[0][0]));
         jlblInput01.setText(translateValueToBooleanLabel(TRUTH_TABLE_INPUT[0][1]));
         jlblExpectedFF.setText(translateValueToBooleanLabel(getExpectedOutputs()[OUTPUT_IDX_FF][0]));
@@ -153,102 +152,99 @@ public class NetVisualizerFrame extends javax.swing.JFrame {
 
         jlblInput30.setText(translateValueToBooleanLabel(TRUTH_TABLE_INPUT[3][0]));
         jlblInput31.setText(translateValueToBooleanLabel(TRUTH_TABLE_INPUT[3][1]));
-        jlblExpectedTT.setText(translateValueToBooleanLabel(getExpectedOutputs()[OUTPUT_IDX_TT][0]));  
+        jlblExpectedTT.setText(translateValueToBooleanLabel(getExpectedOutputs()[OUTPUT_IDX_TT][0]));
     }
-    
-    private String translateValueToBooleanLabel(double value){
+
+    private String translateValueToBooleanLabel(double value) {
         return value >= MID ? TRUE : FALSE;
     }
-    
-    private String translateValueToLabel(double value, double accuracyLimit){
+
+    private String translateValueToLabel(double value, double accuracyLimit) {
         if (value >= HIGH - Math.abs(accuracyLimit)) {
             return TRUE;
-        } else if (value <= LOW + Math.abs(accuracyLimit)){
+        } else if (value <= LOW + Math.abs(accuracyLimit)) {
             return FALSE;
         } else {
             return "Indeterminate";
         }
     }
 
-
     private boolean trained;
-    
-    public int getPerceptionLayerCount(){
+
+    public int getPerceptionLayerCount() {
         return (Integer) jspinPerceptionLayerCount.getValue();
     }
-    
-    public int getHiddenLayerCount(){
+
+    public int getHiddenLayerCount() {
         return (Integer) jspinHiddenLayerCount.getValue();
     }
-    
-    public int getOutputLayerCount(){
+
+    public int getOutputLayerCount() {
         return (Integer) jspinOutputLayerCount.getValue();
     }
-    
-    public int getIterationLimit(){
+
+    public int getIterationLimit() {
         return (Integer) jspinIterationLimit.getValue();
     }
-    
-        public double getLearningRate(){
-            return 3.0;
-        }    
+
+    public double getLearningRate() {
+        return 3.0;
+    }
 //</editor-fold>
-    
+
     private long trainingCount;
-    
-    public void updateGUI(){
+
+    public void updateGUI() {
         jlblTrainingCount.setText(String.valueOf(trainingCount));
 
-        
 //        jcbxInput1.setEnabled(trained);
 //        jcbxInput2.setEnabled(trained);
         btnTestModel.setEnabled(trained);
     }
-    
+
     private double FF_TrainedValue, TF_TrainedValue, FT_TrainedValue, TT_TrainedValue;
-    
-    private void setFF_TrainedValue(double value){
+
+    private void setFF_TrainedValue(double value) {
         FF_TrainedValue = value;
         jlblTrainedValueFF.setText(String.format("%.5f", value));
     }
-    
-    private void setTF_TrainedValue(double value){
+
+    private void setTF_TrainedValue(double value) {
         TF_TrainedValue = value;
         jlblTrainedValueTF.setText(String.format("%.5f", value));
     }
-    
-    private void setFT_TrainedValue(double value){
+
+    private void setFT_TrainedValue(double value) {
         FT_TrainedValue = value;
         jlblTrainedValueFT.setText(String.format("%.5f", value));
     }
-    
-    private void setTT_TrainedValue(double value){
+
+    private void setTT_TrainedValue(double value) {
         TT_TrainedValue = value;
         jlblTrainedValueTT.setText(String.format("%.5f", value));
     }
-    
+
     private void testModel() {
         final int TRUE_ITEM = 0;
-        
+
 //        double input1 = jcbxInput1.getSelectedIndex() == TRUE_ITEM ? high : low;
 //        double input2 = jcbxInput2.getSelectedIndex() == TRUE_ITEM ? high : low;
-        
 //        net.getPerceptionLayer().getNeurons().get(0).setOutput(input1);
 //        net.getPerceptionLayer().getNeurons().get(1).setOutput(input2);
         net.pulse();
-        
+
         double result = net.getOutputLayer().getNeurons().get(0).getOutput();
-        
+
         jlblModelResult.setText((result >= (HIGH - 0.1)) ? "True" : "False");
     }
-    
-    private void trainModel(){
+
+    private void trainModel() {
         System.out.println("Training...");
         trained = false;
         double accuracy = 0.05;
-        
+
         ExpectedValue ff_ev, tf_ev, ft_ev, tt_ev;
-        
+
         switch (getExpectedDataIndex()) {
             case AND_IDX:
                 ff_ev = ExpectedValue.expectedValueFactory(LOW, "FF", accuracy, ExpectedValue.AccuracyTest.LESS_THAN);
@@ -270,69 +266,66 @@ public class NetVisualizerFrame extends javax.swing.JFrame {
                 tt_ev = ExpectedValue.expectedValueFactory(LOW, "TT", accuracy, ExpectedValue.AccuracyTest.LESS_THAN);
                 break;
         }
-        
+
         int iteration = 0;
         int trainCount = 5;
-        
+
         do {
             iteration++;
-            
+
             net.setLearningRate(getLearningRate());
             net.train(TRUTH_TABLE_INPUT, getExpectedOutputs(), trainCount);
-            
+
             // false, false
-            net.getPerceptionLayer().getNeurons().get(0).setOutput(LOW);
-            net.getPerceptionLayer().getNeurons().get(1).setOutput(LOW);
+            net.getInputLayer().getNeurons().get(0).setOutput(LOW);
+            net.getInputLayer().getNeurons().get(1).setOutput(LOW);
             net.pulse();
 
             ff_ev.setValue(net.getOutputLayer().getNeurons().get(0).getOutput());
-            
+
             // false, true
-            net.getPerceptionLayer().getNeurons().get(0).setOutput(LOW);
-            net.getPerceptionLayer().getNeurons().get(1).setOutput(HIGH);
+            net.getInputLayer().getNeurons().get(0).setOutput(LOW);
+            net.getInputLayer().getNeurons().get(1).setOutput(HIGH);
             net.pulse();
 
             ft_ev.setValue(net.getOutputLayer().getNeurons().get(0).getOutput());
-            
+
             // true, false
-            net.getPerceptionLayer().getNeurons().get(0).setOutput(HIGH);
-            net.getPerceptionLayer().getNeurons().get(1).setOutput(LOW);
+            net.getInputLayer().getNeurons().get(0).setOutput(HIGH);
+            net.getInputLayer().getNeurons().get(1).setOutput(LOW);
             net.pulse();
 
             tf_ev.setValue(net.getOutputLayer().getNeurons().get(0).getOutput());
 
             // true, true
-            net.getPerceptionLayer().getNeurons().get(0).setOutput(HIGH);
-            net.getPerceptionLayer().getNeurons().get(1).setOutput(HIGH);
+            net.getInputLayer().getNeurons().get(0).setOutput(HIGH);
+            net.getInputLayer().getNeurons().get(1).setOutput(HIGH);
             net.pulse();
 
             tt_ev.setValue(net.getOutputLayer().getNeurons().get(0).getOutput());
-            
+
             // todo - implement tracking output
             System.out.printf("%d) %s [%f] TF [%f] FT [%f] TT [%f] \n", iteration, ff_ev.getLabel(), ff_ev.getValue(), tf_ev.getValue(), ft_ev.getValue(), tt_ev.getValue());
 
-            if (iteration > getIterationLimit()){
+            if (iteration > getIterationLimit()) {
                 break;
-            }           
-        } while (
-                 (! ff_ev.hasMetAccuracyTest() ) || 
-                 (! tf_ev.hasMetAccuracyTest() ) || 
-                 (! ft_ev.hasMetAccuracyTest() ) || 
-                 (! tt_ev.hasMetAccuracyTest() )
-                );
-        
+            }
+        } while ((!ff_ev.hasMetAccuracyTest())
+                || (!tf_ev.hasMetAccuracyTest())
+                || (!ft_ev.hasMetAccuracyTest())
+                || (!tt_ev.hasMetAccuracyTest()));
+
         trainingCount = iteration;
         trained = true;
-        
+
         setFF_TrainedValue(ff_ev.getValue());
         setTF_TrainedValue(tf_ev.getValue());
         setFT_TrainedValue(ft_ev.getValue());
         setTT_TrainedValue(tt_ev.getValue());
-        
-        updateGUI();        
+
+        updateGUI();
     }
-    
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -1024,9 +1017,9 @@ public class NetVisualizerFrame extends javax.swing.JFrame {
 
     private void jcbxInputDataSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbxInputDataSetActionPerformed
         System.out.println("updating");
-        
+
         updateExpectedDataIndex();
-        
+
         System.out.println("updated");
     }//GEN-LAST:event_jcbxInputDataSetActionPerformed
 
