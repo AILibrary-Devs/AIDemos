@@ -52,6 +52,17 @@ public class ImageViewerFrame extends javax.swing.JFrame {
         this.images = images;
     }
     
+//    public void showImage(){
+//        if ((x >= 0) && (x < images.length) && (y >= 0) && (y < images[0].length)) {
+//            if (pv != null){
+//                pv.setImage((BufferedImage) images[x][y]);
+//            }
+//            
+//            jlblImage.setIcon(new ImageIcon(images[x][y]));
+//        }
+//        
+//    }
+    
     
 //<editor-fold defaultstate="collapsed" desc="Properties">
     private Image[][] images;
@@ -61,9 +72,15 @@ public class ImageViewerFrame extends javax.swing.JFrame {
         this.images = images;
     }
     
-    public void showImage(int x, int y){
+    public void showImage(){
+        showImage((int)jspinX.getValue(), (int) jspinY.getValue(), jcbxFlattened.isSelected());
+    }
+    
+    public void showImage(int x, int y, boolean flattened){
+        
         if ((x >= 0) && (x < images.length) && (y >= 0) && (y < images[0].length)) {
             if (pv != null){
+                pv.setFlattened(flattened);
                 pv.setImage((BufferedImage) images[x][y]);
             }
             
@@ -86,6 +103,7 @@ public class ImageViewerFrame extends javax.swing.JFrame {
         jspinY = new javax.swing.JSpinner();
         jButton1 = new javax.swing.JButton();
         jlblImage = new javax.swing.JLabel();
+        jcbxFlattened = new javax.swing.JCheckBox();
         jpnlPixelHolder = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -101,6 +119,13 @@ public class ImageViewerFrame extends javax.swing.JFrame {
             }
         });
 
+        jcbxFlattened.setText("Flatten Color Space");
+        jcbxFlattened.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcbxFlattenedActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -112,6 +137,8 @@ public class ImageViewerFrame extends javax.swing.JFrame {
                 .addComponent(jspinY, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jcbxFlattened)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jlblImage, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -125,7 +152,8 @@ public class ImageViewerFrame extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jspinX, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jspinY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1))
+                            .addComponent(jButton1)
+                            .addComponent(jcbxFlattened))
                         .addGap(0, 23, Short.MAX_VALUE))
                     .addComponent(jlblImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -161,8 +189,12 @@ public class ImageViewerFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        showImage((int)jspinX.getValue(), (int) jspinY.getValue());
+        showImage();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jcbxFlattenedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbxFlattenedActionPerformed
+        showImage();
+    }//GEN-LAST:event_jcbxFlattenedActionPerformed
 
     /**
      * @param args the command line arguments
@@ -203,6 +235,7 @@ public class ImageViewerFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JCheckBox jcbxFlattened;
     private javax.swing.JLabel jlblImage;
     private javax.swing.JPanel jpnlPixelHolder;
     private javax.swing.JSpinner jspinX;

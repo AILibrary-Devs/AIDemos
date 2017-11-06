@@ -105,7 +105,13 @@ public class PixelViewerPanel extends javax.swing.JPanel {
 
             for (int row = 0; row < imageInt.length; row++) {
                 for (int col = 0; col < imageInt[row].length; col++) {
-                    graphics.setColor(new Color(imageInt[row][col], true));
+                    
+                    if (flattened) {
+                        graphics.setColor(ImageToolbox.getARGBSum(imageInt[row][col]) > 3 * 128 ? Color.WHITE : Color.BLACK );
+                    } else {
+                        graphics.setColor(new Color(imageInt[row][col], true));
+                    }
+                    
                     graphics.fillRect(left + (col * w), top + (row * h), w, h);
                 }
             }
