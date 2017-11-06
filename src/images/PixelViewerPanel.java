@@ -5,6 +5,7 @@
  */
 package images;
 
+import common.ImageToolbox;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -46,6 +47,7 @@ public class PixelViewerPanel extends javax.swing.JPanel {
     private int left, right, top, bottom;
     private boolean flattened;
     private BufferedImage image;
+    private int[][] imageInt;
     
     private int width(){
         return Math.max(0, this.getWidth() - (right + left));
@@ -76,11 +78,18 @@ public class PixelViewerPanel extends javax.swing.JPanel {
         return image;
     }
     
+    private void updateImageIntArrays(){
+        if (getImage() != null) {
+            imageInt = ImageToolbox.imageToIntRowColArrays(image);
+        }
+    }
+    
     /**
      * @param image the image to set
      */
     public void setImage(BufferedImage image) {
         this.image = image;
+        updateImageIntArrays();
         repaint();
     }
 //</editor-fold>
@@ -90,19 +99,14 @@ public class PixelViewerPanel extends javax.swing.JPanel {
     public void paintComponent(Graphics graphics){
         super.paintComponent(graphics);
         
-        if (getImage() != null) {
-            int w = width() / getImage().getWidth();
-            int h = height() / getImage().getHeight();
-            
-            Raster raster = image.getData();
-            int[] pixel = new int[4];
-//            raster.
-            
-            for (int x = 0; x < getImage().getWidth(); x++) {
-                for (int y = 0; y < getImage().getHeight(); y++) {
-                    raster.getPixel(x, y, pixel);
-                    graphics.setColor(((pixel[0] + pixel[1] + pixel[2]) > (128 * 3)) ? Color.RED : Color.BLUE);
-                    graphics.fillRect(left + (x * w), top + (y * h), w, h);
+        if (imageInt != null) {
+            int h = height() / imageInt.length;
+            int w = width() / imageInt[0].length;
+
+            for (int row = 0; row < imageInt.length; row++) {
+                for (int col = 0; col < imageInt[row].length; col++) {
+                    graphics.setColor(new Color(imageInt[row][col], true));
+                    graphics.fillRect(left + (col * w), top + (row * h), w, h);
                 }
             }
         }
