@@ -109,8 +109,18 @@ public class ImageViewerFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jspinX.setModel(new javax.swing.SpinnerNumberModel(0, 0, 31, 1));
+        jspinX.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jspinXStateChanged(evt);
+            }
+        });
 
         jspinY.setModel(new javax.swing.SpinnerNumberModel(0, 0, 32, 1));
+        jspinY.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jspinYStateChanged(evt);
+            }
+        });
 
         jButton1.setText("Show");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -195,6 +205,14 @@ public class ImageViewerFrame extends javax.swing.JFrame {
     private void jcbxFlattenedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbxFlattenedActionPerformed
         showImage();
     }//GEN-LAST:event_jcbxFlattenedActionPerformed
+
+    private void jspinYStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jspinYStateChanged
+        showImage();
+    }//GEN-LAST:event_jspinYStateChanged
+
+    private void jspinXStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jspinXStateChanged
+        showImage();
+    }//GEN-LAST:event_jspinXStateChanged
 
     /**
      * @param args the command line arguments
