@@ -5,7 +5,7 @@
  */
 package images;
 
-import common.ImageToolbox;
+import common.ImageTools;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -80,7 +80,7 @@ public class PixelViewerPanel extends javax.swing.JPanel {
     
     private void updateImageIntArrays(){
         if (getImage() != null) {
-            imageInt = ImageToolbox.imageToIntRowColArrays(image);
+            imageInt = ImageTools.imageToIntRowColArrays(image);
         }
     }
     
@@ -107,7 +107,7 @@ public class PixelViewerPanel extends javax.swing.JPanel {
                 for (int col = 0; col < imageInt[row].length; col++) {
                     
                     if (flattened) {
-                        graphics.setColor(ImageToolbox.getARGBSum(imageInt[row][col]) > 3 * 128 ? Color.WHITE : Color.BLACK );
+                        graphics.setColor(ImageTools.getARGBSum(imageInt[row][col]) > 3 * 128 ? Color.WHITE : Color.BLACK );
                     } else {
                         graphics.setColor(new Color(imageInt[row][col], true));
                     }

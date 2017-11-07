@@ -5,12 +5,13 @@
  */
 package images;
 
-import common.ImageToolbox;
+import common.ImageTools;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.ImageIcon;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
 
 /**
@@ -84,15 +85,42 @@ public class ImageViewerFrame extends javax.swing.JFrame {
     HashMap<String, String> sourceImages;
 
     public void setSourceImage(String string) {
-        System.out.println(string + "  " + sourceImages.get(string));
+//        System.out.println(string + "  " + sourceImages.get(string));
         String path = sourceImages.get(string);
         if (path != null) {
-            Image image = ImageToolbox.loadImageFromResource(sourceImages.get(string));
-            Image[][] images = ImageToolbox.getSubimageArrays(image, 31, 32);
+            if (path.contains("test")) {
+                setImageRows(30);
+                setImageColumns(32);
+            } else {
+                setImageRows(76);
+                setImageColumns(77);
+            }
+            
+            Image image = ImageTools.loadImageFromResource(sourceImages.get(string));
+            Image[][] images = ImageTools.getSubimageArrays(image, getImageRows(), getImageColumns());
 
             setImages(images);
-
         }
+    }
+    
+    private int rows, columns;
+    
+    public void setImageRows(int rows){
+        this.rows = rows;
+        ((SpinnerNumberModel) jspinRow.getModel()).setMaximum(rows - 1);
+    }
+    
+    public int getImageRows(){
+        return rows;
+    }
+    
+    public void setImageColumns(int columns){
+        this.columns = columns;
+        ((SpinnerNumberModel) jspinColumn.getModel()).setMaximum(columns - 1);
+    }
+    
+    public int getImageColumns(){
+        return columns;
     }
 
     public void setImages(Image[][] images) {
@@ -100,11 +128,10 @@ public class ImageViewerFrame extends javax.swing.JFrame {
     }
 
     public void showImage() {
-        showImage((int) jspinX.getValue(), (int) jspinY.getValue(), jcbxFlattened.isSelected());
+        showImage((int) jspinColumn.getValue(), (int) jspinRow.getValue(), jcbxFlattened.isSelected());
     }
 
     public void showImage(int x, int y, boolean flattened) {
-
         if ((x >= 0) && (x < images.length) && (y >= 0) && (y < images[0].length)) {
             if (pv != null) {
                 pv.setFlattened(flattened);
@@ -126,28 +153,17 @@ public class ImageViewerFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jspinX = new javax.swing.JSpinner();
-        jspinY = new javax.swing.JSpinner();
         jlblImage = new javax.swing.JLabel();
         jcbxFlattened = new javax.swing.JCheckBox();
         jcbxSourceImages = new javax.swing.JComboBox<>();
+        jlblRow = new javax.swing.JLabel();
+        jlblRow1 = new javax.swing.JLabel();
+        jlblRow2 = new javax.swing.JLabel();
+        jspinRow = new javax.swing.JSpinner();
+        jspinColumn = new javax.swing.JSpinner();
         jpnlPixelHolder = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jspinX.setModel(new javax.swing.SpinnerNumberModel(0, 0, 31, 1));
-        jspinX.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jspinXStateChanged(evt);
-            }
-        });
-
-        jspinY.setModel(new javax.swing.SpinnerNumberModel(0, 0, 32, 1));
-        jspinY.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jspinYStateChanged(evt);
-            }
-        });
 
         jcbxFlattened.setText("Flatten Color Space");
         jcbxFlattened.addActionListener(new java.awt.event.ActionListener() {
@@ -163,20 +179,51 @@ public class ImageViewerFrame extends javax.swing.JFrame {
             }
         });
 
+        jlblRow.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlblRow.setText("Row");
+
+        jlblRow1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlblRow1.setText("Column");
+
+        jlblRow2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlblRow2.setText("Model");
+
+        jspinRow.setModel(new javax.swing.SpinnerNumberModel(0, 0, 32, 1));
+        jspinRow.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jspinRowStateChanged(evt);
+            }
+        });
+
+        jspinColumn.setModel(new javax.swing.SpinnerNumberModel(0, 0, 31, 1));
+        jspinColumn.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jspinColumnStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jspinX, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jspinY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jcbxSourceImages, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jcbxFlattened)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jspinRow, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jspinColumn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jcbxSourceImages, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jcbxFlattened))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jlblRow, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jlblRow1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jlblRow2, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jlblImage, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -187,11 +234,16 @@ public class ImageViewerFrame extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jspinX, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jspinY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jcbxFlattened)
-                            .addComponent(jcbxSourceImages, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 26, Short.MAX_VALUE))
+                            .addComponent(jlblRow)
+                            .addComponent(jlblRow1)
+                            .addComponent(jlblRow2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jspinRow, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jspinColumn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jcbxSourceImages, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jcbxFlattened))
+                        .addGap(0, 4, Short.MAX_VALUE))
                     .addComponent(jlblImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -200,11 +252,11 @@ public class ImageViewerFrame extends javax.swing.JFrame {
         jpnlPixelHolder.setLayout(jpnlPixelHolderLayout);
         jpnlPixelHolderLayout.setHorizontalGroup(
             jpnlPixelHolderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 526, Short.MAX_VALUE)
+            .addGap(0, 520, Short.MAX_VALUE)
         );
         jpnlPixelHolderLayout.setVerticalGroup(
             jpnlPixelHolderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 382, Short.MAX_VALUE)
+            .addGap(0, 446, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -229,13 +281,13 @@ public class ImageViewerFrame extends javax.swing.JFrame {
         showImage();
     }//GEN-LAST:event_jcbxFlattenedActionPerformed
 
-    private void jspinYStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jspinYStateChanged
+    private void jspinRowStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jspinRowStateChanged
         showImage();
-    }//GEN-LAST:event_jspinYStateChanged
+    }//GEN-LAST:event_jspinRowStateChanged
 
-    private void jspinXStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jspinXStateChanged
+    private void jspinColumnStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jspinColumnStateChanged
         showImage();
-    }//GEN-LAST:event_jspinXStateChanged
+    }//GEN-LAST:event_jspinColumnStateChanged
 
     private void jcbxSourceImagesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbxSourceImagesActionPerformed
         setSourceImage((String) jcbxSourceImages.getSelectedItem());
@@ -282,9 +334,12 @@ public class ImageViewerFrame extends javax.swing.JFrame {
     private javax.swing.JCheckBox jcbxFlattened;
     private javax.swing.JComboBox<String> jcbxSourceImages;
     private javax.swing.JLabel jlblImage;
+    private javax.swing.JLabel jlblRow;
+    private javax.swing.JLabel jlblRow1;
+    private javax.swing.JLabel jlblRow2;
     private javax.swing.JPanel jpnlPixelHolder;
-    private javax.swing.JSpinner jspinX;
-    private javax.swing.JSpinner jspinY;
+    private javax.swing.JSpinner jspinColumn;
+    private javax.swing.JSpinner jspinRow;
     // End of variables declaration//GEN-END:variables
 
 }

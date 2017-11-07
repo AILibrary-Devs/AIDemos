@@ -5,7 +5,7 @@
  */
 package aidemos;
 
-import common.ImageToolbox;
+import common.ImageTools;
 import images.ImageViewerFrame;
 import java.awt.Image;
 
@@ -30,8 +30,8 @@ public class AIDemos {
     }
 
     private static void showImageViewer() {
-        Image image = ImageToolbox.loadImageFromResource("images/mnist_test0.jpg");
-        Image[][] images = ImageToolbox.getSubimageArrays(image, 31, 32);
+        Image image = ImageTools.loadImageFromResource("images/mnist_test0.jpg");
+        Image[][] images = ImageTools.getSubimageArrays(image, 31, 32);
         
         ImageViewerFrame iv = new ImageViewerFrame(images);
         iv.setVisible(true);
