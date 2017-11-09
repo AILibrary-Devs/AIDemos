@@ -7,9 +7,9 @@ package images;
 
 import common.ImageTools;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
 
 /**
  *
@@ -19,21 +19,25 @@ public class PixelViewerPanel extends javax.swing.JPanel {
 
 //<editor-fold defaultstate="collapsed" desc="Constructors">
     {
-    left = DEFAULT_OFFSET;
-    right = DEFAULT_OFFSET;
-    top = DEFAULT_OFFSET;
-    bottom = DEFAULT_OFFSET;
-    
-    setFlattened(false);
-}
+        left = DEFAULT_OFFSET;
+        right = DEFAULT_OFFSET;
+        top = DEFAULT_OFFSET;
+        bottom = DEFAULT_OFFSET;
+
+        setFlattened(false);
+        setShowValue(true);
+    }
+
     /**
      * Creates new form PixelViewerPanel
      */
     public PixelViewerPanel() {
         initComponents();
     }
+
     /**
      * Creates new form PixelViewerPanel
+     *
      * @param image
      */
     public PixelViewerPanel(BufferedImage image) {
@@ -41,49 +45,63 @@ public class PixelViewerPanel extends javax.swing.JPanel {
         initComponents();
     }
 //</editor-fold>
-    
+
 //<editor-fold defaultstate="collapsed" desc="Properties">
-    private static final int DEFAULT_OFFSET = 3;
-    private int left, right, top, bottom;
-    private boolean flattened;
+    private static final int DEFAULT_OFFSET = 1;
+    private final int left, right, top, bottom;
+    private boolean flattened, showValue;
     private BufferedImage image;
     private int[][] imageInt;
-    
-    private int width(){
+
+    private int width() {
         return Math.max(0, this.getWidth() - (right + left));
     }
-    
-    private int height(){
+
+    private int height() {
         return Math.max(0, this.getHeight() - (top + bottom));
     }
-    
+
+    /**
+     * @return the showValue
+     */
+    public boolean isShowValue() {
+        return showValue;
+    }
+
+    /**
+     * @param showValue the showValue to set
+     */
+    public void setShowValue(boolean showValue) {
+        this.showValue = showValue;
+    }
+
     /**
      * @return the flattened
      */
     public boolean isFlattened() {
         return flattened;
     }
-    
+
     /**
      * @param flattened the flattened to set
      */
     public void setFlattened(boolean flattened) {
         this.flattened = flattened;
     }
-    
+
     /**
      * @return the image
      */
     public BufferedImage getImage() {
         return image;
     }
-    
-    private void updateImageIntArrays(){
+
+    private void updateImageIntArrays() {
         if (getImage() != null) {
             imageInt = ImageTools.imageToIntRowColArrays(image);
         }
     }
-    
+
     /**
      * @param image the image to set
      */
@@ -93,26 +111,33 @@ public class PixelViewerPanel extends javax.swing.JPanel {
         repaint();
     }
 //</editor-fold>
-    
+
 //<editor-fold defaultstate="collapsed" desc="Methods">
     @Override
-    public void paintComponent(Graphics graphics){
+    public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
-        
+
         if (imageInt != null) {
             int h = height() / imageInt.length;
             int w = width() / imageInt[0].length;
 
             for (int row = 0; row < imageInt.length; row++) {
                 for (int col = 0; col < imageInt[row].length; col++) {
-                    
+
                     if (flattened) {
-                        graphics.setColor(ImageTools.getARGBSum(imageInt[row][col]) > 3 * 128 ? Color.WHITE : Color.BLACK );
+                        graphics.setColor(ImageTools.getARGBSum(imageInt[row][col]) > 3 * 128 ? Color.WHITE : Color.BLACK);
                     } else {
                         graphics.setColor(new Color(imageInt[row][col], true));
                     }
-                    
+
                     graphics.fillRect(left + (col * w), top + (row * h), w, h);
+
+                    if (showValue) {
+                        graphics.setColor(Color.CYAN);
+//                        Font font = new Font("Calibri", Font.PLAIN, 8);
+//                        graphics.setFont(font);
+                        graphics.drawString(String.format("%.2f", ImageTools.getARGBLinearTransform(ImageTools.getARGB(imageInt[row][col]))), left + (col * w), top + (row * h) + (h / 2));
+                    }
                 }
             }
         }

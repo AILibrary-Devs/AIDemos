@@ -9,7 +9,6 @@ import common.ImageTools;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
-import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
